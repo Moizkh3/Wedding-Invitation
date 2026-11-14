@@ -1,0 +1,459 @@
+/* ───────── Fonts ───────── */
+/* Drop the file into /public/fonts (see the README there). Falls back to Ms Madi. */
+@font-face {
+  font-family: "Wiliam Signature";
+  src: url("/fonts/WiliamSignature.woff2") format("woff2");
+  font-display: swap;
+}
+
+/* ───────── Tokens (same names as the Framer colour styles) ───────── */
+:root {
+  --surface-base: #1e0003;
+  --text-ink: #4a1219;
+  --border-ink: rgba(74, 18, 25, 0.35);
+  --text-on-dark: #e6d7b8;
+  --text-seal: #2a1a12;
+
+  --font-serif: "Cormorant Garamond", "Cormorant", Georgia, serif;
+  --font-script: "Wiliam Signature", "Ms Madi", "Snell Roundhand", cursive;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--surface-base);
+}
+
+body {
+  font-family: var(--font-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+p,
+h1 {
+  margin: 0;
+}
+
+/* ───────── Page ───────── */
+.vv-main {
+  position: relative;
+  z-index: 1;
+}
+
+.vv-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 40px;
+  overflow: clip;
+}
+
+.vv-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* Holder: sized to the scaled envelope; fades up once on load. */
+.vv-holder {
+  position: relative;
+  flex: none;
+  animation: vv-appear 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes vv-appear {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.98);
+  }
+}
+
+.vv-caption {
+  width: 100%;
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  text-align: center;
+  text-wrap: balance;
+  color: var(--text-on-dark);
+}
+
+/* ───────── Envelope ───────── */
+.vv-envelope {
+  --vv-dur: 1.1s;
+  --vv-ease: cubic-bezier(0.22, 1, 0.36, 1); /* replaced by the sampled spring in JS */
+
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 600px;
+  height: 924px;
+  transform-origin: 0 0;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+.vv-envelope:focus-visible .vv-seal {
+  filter: drop-shadow(0 0 0 rgba(230, 215, 184, 0.9)) drop-shadow(0 0 10px rgba(230, 215, 184, 0.75));
+}
+
+.vv-group,
+.vv-layer,
+.vv-card,
+.vv-flap-stage,
+.vv-flap,
+.vv-seal {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 600px;
+  height: 924px;
+}
+
+.vv-layer {
+  display: block;
+  overflow: visible;
+}
+
+/* Closed → open: the whole envelope drops 190px to make room for the card. */
+.vv-group {
+  transform: translateY(-190px);
+  transition: transform var(--vv-dur) var(--vv-ease), translate 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.vv-envelope[data-open="true"] .vv-group {
+  transform: translateY(0);
+}
+
+/* Card: clipped so it disappears into the envelope's pocket. */
+.vv-card-clip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 600px;
+  height: 900px;
+  overflow: hidden;
+  overflow: clip;
+}
+
+.vv-card {
+  transform: translateY(562px);
+  transition: transform var(--vv-dur) var(--vv-ease);
+}
+
+.vv-envelope[data-open="true"] .vv-card {
+  transform: translateY(0);
+}
+
+/* Flap: hinged on the envelope's top edge, swings back in 3D and fades. */
+.vv-flap-stage {
+  perspective: 1600px;
+  pointer-events: none;
+}
+
+.vv-flap {
+  transform-origin: 50% 56.4%;
+  transform: rotateX(0deg);
+  transition: transform var(--vv-dur) var(--vv-ease);
+}
+
+.vv-flap-art {
+  transition: opacity var(--vv-dur) var(--vv-ease);
+}
+
+.vv-envelope[data-open="true"] .vv-flap {
+  transform: rotateX(180deg);
+}
+
+.vv-envelope[data-open="true"] .vv-flap-art {
+  opacity: 0;
+}
+
+/* Wax seal + monogram */
+.vv-seal {
+  pointer-events: none;
+  transform-origin: 300px 761.25px;
+  transition: scale 0.6s cubic-bezier(0.22, 1, 0.36, 1), filter 0.3s ease;
+}
+
+.vv-monogram {
+  position: absolute;
+  left: 268px;
+  top: 729px;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vv-monogram p {
+  font-family: var(--font-script);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--text-seal);
+  font-feature-settings: "blwf", "cv03", "cv04", "cv09", "cv11";
+}
+
+/* Hint above the closed envelope */
+.vv-hint {
+  position: absolute;
+  left: 0;
+  top: 380px;
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+  transition: opacity var(--vv-dur) var(--vv-ease), transform var(--vv-dur) var(--vv-ease);
+}
+
+.vv-envelope[data-open="true"] .vv-hint {
+  opacity: 0;
+  transform: translateY(-50px);
+}
+
+.vv-hint-text {
+  font-size: 22px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  color: var(--text-on-dark);
+}
+
+/* ───────── Card text ───────── */
+.vv-card-text {
+  position: absolute;
+  left: 128px;
+  top: 134px;
+  width: 345px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  color: var(--text-ink);
+}
+
+.vv-card-text > * {
+  width: 100%;
+}
+
+.vv-balance {
+  text-wrap: balance;
+}
+
+.vv-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.24em;
+  color: var(--text-ink);
+}
+
+.vv-eyebrow.vv-on-dark {
+  color: var(--text-on-dark);
+}
+
+.vv-names {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.vv-name {
+  width: 100%;
+  font-family: var(--font-script);
+  font-size: 54px;
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.vv-body-italic {
+  font-size: 17px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.vv-card-text > .vv-divider {
+  flex: none;
+  width: 120px;
+  height: 10px;
+}
+
+.vv-card-text > .vv-date-row {
+  width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.vv-date-box {
+  width: 96px;
+  padding: 7px 0;
+  border-top: 1px solid var(--border-ink);
+  border-bottom: 1px solid var(--border-ink);
+}
+
+.vv-numeral {
+  font-size: 46px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.vv-detail {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.14em;
+}
+
+/* ───────── Music toggle ───────── */
+.vv-music {
+  position: fixed;
+  top: 28px;
+  right: 28px;
+  z-index: 10;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(230, 215, 184, 0.45);
+  background: rgba(30, 0, 3, 0.55);
+  color: #e6d7b8;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.vv-music:focus-visible {
+  outline: 1px solid var(--text-on-dark);
+  outline-offset: 3px;
+}
+
+/* ───────── Extras (not in the Framer file; toggle in invitation.config.js) ───────── */
+
+/* hoverLift */
+@media (hover: hover) {
+  .vv-hover[data-open="false"]:hover .vv-group {
+    translate: 0 -6px;
+  }
+  .vv-hover[data-open="false"]:hover .vv-seal {
+    scale: 1.05;
+  }
+}
+
+/* textReveal */
+.vv-reveal[data-open="true"] .vv-card-text > * {
+  animation: vv-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(0.28s + var(--i, 0) * 0.07s);
+}
+
+.vv-card-text > :nth-child(2) { --i: 1; }
+.vv-card-text > :nth-child(3) { --i: 2; }
+.vv-card-text > :nth-child(4) { --i: 3; }
+.vv-card-text > :nth-child(5) { --i: 4; }
+.vv-card-text > :nth-child(6) { --i: 5; }
+.vv-card-text > :nth-child(7) { --i: 6; }
+.vv-card-text > :nth-child(8) { --i: 7; }
+
+@keyframes vv-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+/* goldDust */
+.vv-dust {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.vv-dust i {
+  position: absolute;
+  left: var(--x);
+  bottom: -10px;
+  width: var(--s);
+  height: var(--s);
+  border-radius: 50%;
+  background: #e6d7b8;
+  opacity: 0;
+  animation: vv-dust var(--d) linear var(--delay) infinite;
+}
+
+@keyframes vv-dust {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  12%,
+  88% {
+    opacity: var(--o);
+  }
+  100% {
+    transform: translate3d(var(--drift), -110vh, 0);
+    opacity: 0;
+  }
+}
+
+/* ───────── Phone (same breakpoint as Framer: below 810px) ───────── */
+@media (max-width: 809.98px) {
+  .vv-section {
+    padding: 28px 10px;
+  }
+  .vv-caption {
+    font-size: 16px;
+  }
+  .vv-music {
+    top: 16px;
+    right: 16px;
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* ───────── Reduced motion ───────── */
+@media (prefers-reduced-motion: reduce) {
+  .vv-envelope {
+    --vv-dur: 0.01s;
+  }
+  .vv-holder,
+  .vv-reveal[data-open="true"] .vv-card-text > * {
+    animation: none;
+  }
+  .vv-dust {
+    display: none;
+  }
+}
