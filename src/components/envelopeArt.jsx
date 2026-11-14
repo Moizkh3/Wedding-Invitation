@@ -169,9 +169,9 @@ export function WaxSeal() {
     <Layer>
       <defs>
         <radialGradient id="vv-wax" cx=".42" cy=".38" r=".7">
-          <stop offset="0" stopColor="#8A6B55" />
-          <stop offset=".6" stopColor="#5C4232" />
-          <stop offset="1" stopColor="#3E2B20" />
+          <stop offset="0" stopColor="#F3DFA6" />   {/* was #8A6B55 – highlight */}
+          <stop offset=".6" stopColor="#CFA85A" />  {/* was #5C4232 – main body */}
+          <stop offset="1" stopColor="#9C7632" />   {/* was #3E2B20 – edge */}
         </radialGradient>
         <filter id="vv-seal-shadow" x="-20%" y="-20%" width="140%" height="140%">
           <feDropShadow dx="0" dy="8" stdDeviation="10" floodColor="#000" floodOpacity=".45" />

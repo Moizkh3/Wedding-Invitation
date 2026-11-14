@@ -29,7 +29,7 @@ export default function App() {
           </div>
         </section>
       </main>
-      <MusicToggle {...music} />
+      {/* <MusicToggle {...music} /> */}
     </>
   )
 }

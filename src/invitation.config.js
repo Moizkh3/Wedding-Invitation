@@ -9,7 +9,7 @@ export const content = {
   invitationLine: "request the honour of your presence at the celebration of their marriage",
 
   weekday: "SATURDAY",
-  day: "19",
+  day: "23",
   monthYear: "JAN 2027",
   timeLine: "at nine o’clock in the evening",
 
@@ -19,7 +19,7 @@ export const content = {
 
   hintEyebrow: "YOU ARE CORDIALLY INVITED",
   hintText: "Tap the envelope to open",
-  rsvpLine: "Kindly reply by the first of December",
+  rsvpLine: "Kindly reply by the first of January",
 }
 
 export const music = {
@@ -30,7 +30,7 @@ export const music = {
 }
 
 // Same spring the Framer component uses for the open / close transition.
-export const motion = { duration: 1.1, bounce: 0.12 }
+export const motion = { duration: 1.2, bounce: 0.25 }
 
 // The "and more" on top of the Framer original. Set any to false for a 1:1 match.
 export const extras = {

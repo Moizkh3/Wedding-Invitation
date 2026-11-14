@@ -67,6 +67,11 @@ h1 {
   max-width: 1200px;
 }
 
+.vv-seal {
+  /* existing lines stay */
+  filter: drop-shadow(0 0 14px rgba(240, 210, 140, 0.55));
+}
+
 /* Holder: sized to the scaled envelope; fades up once on load. */
 .vv-holder {
   position: relative;
